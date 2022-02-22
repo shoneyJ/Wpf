@@ -1,0 +1,211 @@
+﻿<Window x:Class="Wpf_CooperativeFarmers.SalesReport"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Wpf_CooperativeFarmers"
+        xmlns:r="clr-namespace:Wpf_CooperativeFarmers.MyResources"
+        Loaded="Window_Loaded"
+        Closed="Window_Closed"
+        Width="650"
+          Title="{x:Static r:Resource.Title}"
+        mc:Ignorable="d"
+         Style="{StaticResource Style_Window}"
+         FlowDirection="{Binding Source={x:Static r:Resource.FlowDirection},Converter={StaticResource str2flow}}"
+       >
+    <Window.Resources>
+        <local:String2ImagePath x:Key="Str2img"/>
+        <local:Id2ProductName x:Key="Id2name"/>
+        <local:Id2MeasuingUnit x:Key="Id2MU"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="180"  />
+            <ColumnDefinition Width="250"  />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.ColumnSpan="3" Background="Beige" >
+            <StackPanel>
+                <TextBlock HorizontalAlignment="Center" FontSize="20" Margin="15" Text="{x:Static r:Resource.manageSalesReport}" ></TextBlock>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Column="3" HorizontalAlignment="Right" Margin="10,5">
+            <TextBlock Text="{x:Static r:Resource.language}"/>
+            <ComboBox SelectionChanged="Cbx_languages_SelectionChanged" Name="Cbx_languages" Width="100"></ComboBox>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Margin="10,0">
+            <StackPanel  Grid.Row="1" Orientation="Vertical">
+                <TextBlock Style="{StaticResource Style_TbkCaption}" Width="150"  Text="{x:Static r:Resource.selectFarmer}" />
+                <TextBlock  Text="{x:Static r:Resource.nameFilter}" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Name="Tbx_farmerFilter" HorizontalAlignment="Left" Margin="0,5"  Width="160" TextChanged="Tbx_farmerFilter_TextChanged" />
+                    <TextBlock  Text="{Binding ElementName=Lbx_farmers, Path=Items.Count}" TextAlignment="Center"  VerticalAlignment="Center" Margin="5,0"/>
+                </StackPanel>
+
+
+            </StackPanel>
+            <StackPanel>
+                <ListBox Name="Lbx_farmers" Height="320"  >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                <Image Source="{Binding imagePath, Converter={StaticResource Str2img}}" Width="30" Height="30" />
+                                <StackPanel Margin="3,0,0,0">
+                                    <TextBlock> 
+                                        <Run Text="{Binding firstName}"></Run>
+                                        <Run Text="{Binding lastName}"></Run>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding birthDate, StringFormat=dd/MM/yyyy }"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+
+            </StackPanel>
+
+            <!--<StackPanel Margin="0,10,5,0" Orientation="Horizontal">
+
+                <Button   Name="Btn_addFarmer" Click="Btn_AddFarmer_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/icon_add.png" Width="40" Height="40" />
+                        -->
+            <!--<TextBlock VerticalAlignment="Center">Add</TextBlock>-->
+            <!--
+                    </StackPanel>
+                </Button>
+
+               
+
+            </StackPanel>-->
+        </StackPanel>
+        <StackPanel  Margin="10,0"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" DataContext="{Binding ElementName=Lbx_farmers, Path=SelectedItem}" VerticalAlignment="Top">
+            <TextBlock FontSize="25">
+                    <Run Text="{Binding firstName}"></Run>
+                    <Run Text="{Binding lastName}"></Run>
+            </TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="0,40" >
+            <TextBlock Text="{x:Static r:Resource.selectMonth}" Style="{StaticResource Style_TbkCaption}"></TextBlock>
+
+            <Calendar  x:Name="_calendar" DisplayDateChanged="_calendar_DisplayDateChanged" DisplayModeChanged="_calendar_DisplayModeChanged" DisplayMode="Year"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="2" Margin="10,50,0,0">
+          
+
+           
+            <StackPanel Margin="0,5,0,0">
+
+                <ListBox>
+                    <ListBox.Template>
+                        <ControlTemplate>
+
+                            <Grid DockPanel.Dock="Top" Height="20" Background="Wheat">
+                                <Grid.ColumnDefinitions>
+                                   
+                                    <ColumnDefinition Width="100"></ColumnDefinition>
+                                    <ColumnDefinition Width="40"></ColumnDefinition>
+                                    <ColumnDefinition Width="40"></ColumnDefinition>
+
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="{x:Static r:Resource.product}" HorizontalAlignment="Center"  VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1" Text="{x:Static r:Resource.qty}" HorizontalAlignment="Center"  VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="2" HorizontalAlignment="Center"  VerticalAlignment="Center" >€</TextBlock>
+
+                            </Grid>
+
+
+                        </ControlTemplate>
+                    </ListBox.Template>
+
+                </ListBox>
+
+                <ListBox Name="Lbx_sales" Height="300" Margin="0,5" ScrollViewer.VerticalScrollBarVisibility="Visible" >
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="4">
+                                <Grid.ColumnDefinitions>                                
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="40"  />
+                                    <ColumnDefinition Width="40"  />
+                                </Grid.ColumnDefinitions>
+
+                              
+
+                                <TextBlock Grid.Column="0" Text="{Binding ProductId ,Converter={StaticResource Id2name }}" />
+                                <TextBlock Grid.Column="1" >
+                                    <Run   Text="{Binding Quantity}"  />
+                                          
+                                    <Run   Text="{Binding ProductId ,Converter={StaticResource Id2MU }}" >                                        
+                                    </Run>
+                                </TextBlock>
+                                <TextBlock Grid.Column="2" Text="{Binding Price, StringFormat={}{0:N0}€ }" />
+
+
+                           
+
+
+
+                            </Grid>
+
+
+
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+
+            </StackPanel>
+        </StackPanel>
+
+        <Grid Margin="-200,37" Name="Grd_Menu" Grid.RowSpan="2" Width="150" Height="150" HorizontalAlignment="Left" Background="WhiteSmoke"  
+             VerticalAlignment="top" MouseEnter="Grd_Menu_MouseEnter" MouseLeave="Grd_Menu_MouseLeave" >
+
+            <StackPanel>
+                <StackPanel Background="BurlyWood"  Width="130" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10" >
+                    <TextBlock Name="Tbk_manageFarmerMenuItem" MouseDown="Tbk_manageFarmerMenuItem_MouseDown" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Text="{x:Static r:Resource.manageFarmers}" Margin="5,0"></TextBlock>
+
+                </StackPanel>
+
+                <StackPanel Background="BurlyWood"  Width="130" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10" >
+                    <TextBlock MouseDown="Tbk_manageStorageMenuItem_MouseDown"
+                               Name="Tbk_manageStorageMenuItem" HorizontalAlignment="Center" VerticalAlignment="Center"  Foreground="White" Text="{x:Static r:Resource.manageDelivery}" Margin="5,0"></TextBlock>
+
+                </StackPanel>
+                <StackPanel Background="BurlyWood"  Width="130" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10" >
+                    <TextBlock MouseDown="Tbk_manageSalesMenuItem_MouseDown"
+                               Name="Tbk_manageSalesMenuItem" HorizontalAlignment="Center" VerticalAlignment="Center"  Foreground="White" Text="{x:Static r:Resource.manageSales}" Margin="5,0"></TextBlock>
+
+                </StackPanel>
+
+                <StackPanel Background="BurlyWood"  Width="130" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10" >
+                    <TextBlock MouseDown="Tbk_manageSalesReportMenuItem_MouseDown"
+                               Name="Tbk_manageSalesReportMenuItem" HorizontalAlignment="Center" VerticalAlignment="Center"  Foreground="White" Text="{x:Static r:Resource.manageSalesReport}" Margin="5,0"></TextBlock>
+
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <Grid Margin="10,5" Name="Grd_Menu2" Grid.RowSpan="2" Width="50" Height="30" HorizontalAlignment="Left" Background="WhiteSmoke"  
+             VerticalAlignment="top" MouseEnter="Grd_Menu_MouseEnter" MouseLeave="Grd_Menu_MouseLeave" >
+
+            <StackPanel>
+
+                <StackPanel>
+                    <Image  Width="50" Source="/icon_menu.png" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                </StackPanel>
+
+
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</Window>
